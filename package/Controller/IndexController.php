@@ -3,7 +3,7 @@
   +------------------------------------------------------------------------+
   | PhalconEye CMS                                                         |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2013 PhalconEye Team (http://phalconeye.com/)            |
+  | Copyright (c) 2013-2014 PhalconEye Team (http://phalconeye.com/)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file LICENSE.txt.                             |
@@ -16,26 +16,22 @@
 
 namespace Blog\Controller;
 
-use Core\Controller\Base as Controller;
+use Core\Controller\AbstractController;
 
 /**
- * Main controller.
+ * Index controller.
  *
- * @category  PhalconEye
- * @package   Blog\Controller
- * @author    Ivan Vorontsov <ivan.vorontsov@phalconeye.com>
- * @copyright Copyright (c) 2013 PhalconEye Team
- * @license   New BSD License
- * @link      http://phalconeye.com/
+ * @category PhalconEye\Module
+ * @package  Controller
  *
  * @RoutePrefix("/blogs", name="blogs")
  */
-class IndexController extends Controller
+class IndexController extends AbstractController
 {
     /**
-     * Main action.
+     * Module index action.
      *
-     * @return null
+     * @return void
      *
      * @Route("/", methods={"GET"}, name="blogs")
      */
@@ -43,5 +39,4 @@ class IndexController extends Controller
     {
 
     }
-
 }

@@ -3,7 +3,7 @@
   +------------------------------------------------------------------------+
   | PhalconEye CMS                                                         |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2013 PhalconEye Team (http://phalconeye.com/)            |
+  | Copyright (c) 2013-2014 PhalconEye Team (http://phalconeye.com/)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file LICENSE.txt.                             |
@@ -19,21 +19,17 @@ namespace Blog;
 use Engine\Installer as EngineInstaller;
 
 /**
- * Blog installer.
+ * Installer for Blog.
  *
- * @category  PhalconEye
- * @package   Blog
- * @author    Ivan Vorontsov <ivan.vorontsov@phalconeye.com>
- * @copyright Copyright (c) 2013 PhalconEye Team
- * @license   New BSD License
- * @link      http://phalconeye.com/
+ * @category PhalconEye\Module
+ * @package  Module
  */
 class Installer extends EngineInstaller
 {
     /**
      * Used to install specific database entities or other specific action.
      *
-     * @return null
+     * @return void
      */
     public function install()
     {
@@ -43,7 +39,7 @@ class Installer extends EngineInstaller
     /**
      * Used before package will be removed from the system.
      *
-     * @return null
+     * @return void
      */
     public function remove()
     {
@@ -52,16 +48,14 @@ class Installer extends EngineInstaller
 
     /**
      * Used to apply some updates.
-     * Returns 'string' (new version) if migration is not finished,
-     * 'null' if all updates were applied.
      *
-     * @param string $currentVersion Current module version.
+     * @param string $currentVersion Current version name.
      *
-     * @return string|null
+     * @return mixed 'string' (new version) if migration is not finished, 'null' if all updates were applied
      */
     public function update($currentVersion)
     {
+
         return null;
     }
-
 }

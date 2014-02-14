@@ -3,7 +3,7 @@
   +------------------------------------------------------------------------+
   | PhalconEye CMS                                                         |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2013 PhalconEye Team (http://phalconeye.com/)            |
+  | Copyright (c) 2013-2014 PhalconEye Team (http://phalconeye.com/)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file LICENSE.txt.                             |
@@ -16,24 +16,15 @@
 
 namespace Blog;
 
-use Core\Bootstrap as CoreBootstrap;
+use Engine\Bootstrap as EngineBootstrap;
 
 /**
- * Blog bootstrap.
+ * Bootstrap for Blog.
  *
- * @category  PhalconEye
- * @package   Blog
- * @author    Ivan Vorontsov <ivan.vorontsov@phalconeye.com>
- * @copyright Copyright (c) 2013 PhalconEye Team
- * @license   New BSD License
- * @link      http://phalconeye.com/
+ * @category PhalconEye\Module
+ * @package  Module
  */
-class Bootstrap extends CoreBootstrap
+class Bootstrap extends EngineBootstrap
 {
-    /**
-     * Module internal name.
-     *
-     * @var string
-     */
     protected $_moduleName = "Blog";
 }
