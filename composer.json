@@ -8,5 +8,8 @@
     "require" : {
         "php" : ">=5.4.20",
         "phalconeye/composer-installer-plugin": "0.5.*@dev"
+    },
+    "extra": {
+        "name": "Blog"
     }
 }
