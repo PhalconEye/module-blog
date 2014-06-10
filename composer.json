@@ -1,5 +1,5 @@
 {
-    "name": "PhalconEye/module-blog",
+    "name": "phalconeye/module-blog",
     "type": "module",
     "description" : "Phalcon Eye Blog module",
     "keywords" : [ "phalcon", "phalconeye", "blog", "module" ],
