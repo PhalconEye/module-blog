@@ -1,0 +1,11 @@
+{
+    "name": "PhalconEye/module-blog",
+    "type": "module",
+    "description" : "Phalcon Eye Blog module",
+    "keywords" : [ "phalcon", "phalconeye", "blog", "module" ],
+    "homepage" : "http://phalconeye.com",
+    "license" : "BSD-3-Clause",
+    "require" : {
+        "php" : ">=5.4.20"
+    }
+}
