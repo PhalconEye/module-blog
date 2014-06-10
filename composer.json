@@ -7,6 +7,6 @@
     "license" : "BSD-3-Clause",
     "require" : {
         "php" : ">=5.4.20",
-        "phalconeye/composer-installer-plugin": "0.5.*"
+        "phalconeye/composer-installer-plugin": "0.5.*@dev"
     }
 }
