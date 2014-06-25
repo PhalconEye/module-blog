@@ -1,9 +1,9 @@
 Phalcon Eye Blog Module
 =======================
 
-Phalcon Eye CMS - https://github.com/lantian/PhalconEye
+Phalcon Eye CMS - https://github.com/PhalconEye/cms
 
-* Required PhalconEye: >= 0.4.0
+* Required PhalconEye: >= 0.5.0
 * Required modules: Core, User.
 * Website: [PhalconEye](http://phalconeye.com/)
 
