@@ -1,13 +1,12 @@
 {
     "name": "phalconeye/module-blog",
-    "type": "module",
+    "type": "phalconeye-module",
     "description" : "Phalcon Eye Blog module",
     "keywords" : [ "phalcon", "phalconeye", "blog", "module" ],
     "homepage" : "http://phalconeye.com",
     "license" : "BSD-3-Clause",
     "require" : {
-        "php" : ">=5.4.20",
-        "phalconeye/composer-installer-plugin": "0.5.*@dev"
+        "php" : ">=5.4.20"
     },
     "extra": {
         "name": "Blog"
