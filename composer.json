@@ -19,8 +19,8 @@
         "php" : ">=5.4.20",
 
         "phalconeye/cms": ">=0.5.0",
-        "phalconeye/module-core": "0.5.0.*@dev",
-        "phalconeye/module-user": "0.5.0.*@dev"
+        "phalconeye/module-core": "0.5.*@dev",
+        "phalconeye/module-user": "0.5.*@dev"
     },
     "extra": {
         "name": "Blog"
