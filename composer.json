@@ -5,8 +5,20 @@
     "keywords" : [ "phalcon", "phalconeye", "blog", "module" ],
     "homepage" : "http://phalconeye.com",
     "license" : "BSD-3-Clause",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/PhalconEye/module-core.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/PhalconEye/module-user.git"
+        }
+    ],
     "require" : {
-        "php" : ">=5.4.20"
+        "php" : ">=5.4.20",
+        "phalconeye/module-core": "0.5.0.*@dev",
+        "phalconeye/module-user": "0.5.0.*@dev"
     },
     "extra": {
         "name": "Blog"
