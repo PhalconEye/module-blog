@@ -1,4 +1,5 @@
 {#
+{#
  +------------------------------------------------------------------------+
  | PhalconEye CMS                                                         |
  +------------------------------------------------------------------------+
@@ -15,28 +16,23 @@
  +------------------------------------------------------------------------+
 #}
 
-{% extends "Core/View/layouts/main.volt" %}
+{% extends "Core/View/layouts/admin.volt" %}
 
-{% block title %}{{ "Blog" |i18n }}{% endblock %}
+{% block title %}{{ 'Posts'|i18n }}{% endblock %}
+
+{% block header %}
+<div class="navbar navbar-header">
+<div class="navbar-inner">
+    {{ navigation.render() }}
+</div>
+</div>
+{% endblock %}
 
 {% block content %}
-<div id="module-blog">
-
-<h2>{{ "Blog" |i18n }}</h2>
-
-<table style="width: 100%">
-  <tbody>
-    {% for post in posts %}
-    <tr>
-      <td style="width: 20%; border: 1px solid #000000">{{ post.creation_date }}</td>
-      <td style="border: 1px solid #000000">
-          <h3>{{ post.title }}</h3>
-          <p>{{ post.description }}</p>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
+<div class="span12">
+<div class="row-fluid">
+    <h2>{{ 'Posts' |i18n }} ({{ grid.getTotalCount() }})</h2>
+    {{ grid.render() }}
+</div>
 </div>
 {% endblock %}

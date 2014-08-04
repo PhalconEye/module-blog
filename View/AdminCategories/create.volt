@@ -1,5 +1,4 @@
-<?php
-/*
+{#
   +------------------------------------------------------------------------+
   | PhalconEye CMS                                                         |
   +------------------------------------------------------------------------+
@@ -12,37 +11,22 @@
   | obtain it through the world-wide-web, please send an email             |
   | to license@phalconeye.com so we can send you a copy immediately.       |
   +------------------------------------------------------------------------+
-*/
+  | Author: Piotr Gasiorowski <p.gasiorowski@vipserv.org>                  |
+  +------------------------------------------------------------------------+
+#}
 
-namespace Blog\Controller;
+{% extends "Core/View/layouts/modal.volt" %}
 
-use Blog\Model\Post;
-use Core\Controller\AbstractController;
+{% block title %}{{ "Create Category"|i18n }}{% endblock %}
 
-/**
- * Index controller.
- *
- * @category PhalconEye\Module
- * @package  Controller
- *
- * @RoutePrefix("/blog", name="blogs")
- */
-class IndexController extends AbstractController
-{
-    /**
-     * Module index action.
-     *
-     * @return void
-     *
-     * @Route("/", methods={"GET"}, name="blog")
-     */
-    public function indexAction()
-    {
-        $this->renderParts();
+{% block header %}
+    <div class="navbar navbar-header">
+        <div class="navbar-inner">
+            {{ navigation.render() }}
+        </div>
+    </div>
+{% endblock %}
 
-        $this->view->posts = Post::find([
-            'is_enabled = 1',
-            'order' => 'creation_date DESC'
-        ]);
-    }
-}
+{% block body %}
+    {{ form.render() }}
+{% endblock %}
