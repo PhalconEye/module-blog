@@ -12,37 +12,46 @@
   | obtain it through the world-wide-web, please send an email             |
   | to license@phalconeye.com so we can send you a copy immediately.       |
   +------------------------------------------------------------------------+
+  | Author: Piotr Gasiorowski <p.gasiorowski@vipserv.org>                  |
+  +------------------------------------------------------------------------+
 */
 
 namespace Blog\Controller;
 
-use Blog\Model\Post;
-use Core\Controller\AbstractController;
+use Core\Controller\AbstractAdminController;
+use Blog\Navigation\AdminNavigation;
 
 /**
- * Index controller.
+ * Admin Index Controller.
  *
- * @category PhalconEye\Module
- * @package  Controller
+ * @category  PhalconEye
+ * @package   Blog\Controller
+ * @author    Piotr Gasiorowski <p.gasiorowski@vipserv.org>
+ * @copyright 2013-2014 PhalconEye Team
+ * @license   New BSD License
+ * @link      http://phalconeye.com/
  *
- * @RoutePrefix("/blog", name="blogs")
+ * @RoutePrefix("/admin/module/blog")
  */
-class IndexController extends AbstractController
+class AdminIndexController extends AbstractAdminController
 {
+    /**
+     * @{inheritdoc}
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $this->view->navigation = new AdminNavigation;
+    }
+
     /**
      * Module index action.
      *
      * @return void
      *
-     * @Route("/", methods={"GET"}, name="blog")
+     * @Route("/", methods={"GET"}, name="admin-blog")
      */
     public function indexAction()
     {
-        $this->renderParts();
-
-        $this->view->posts = Post::find([
-            'is_enabled = 1',
-            'order' => 'creation_date DESC'
-        ]);
     }
 }
