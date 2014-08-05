@@ -137,7 +137,7 @@ class Category extends AbstractModel
     public function isAllowed()
     {
         $valid = true;
-        $language = $this->getDI()->get('session')->get('language', 'en');
+        $language = $this->getDI()->get('session')->get('language');
         $languages = $this->getLanguages();
 
         if (!empty($languages)) {

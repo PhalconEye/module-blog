@@ -65,7 +65,7 @@ class AdminCategoriesController extends AbstractAdminController
         if (func_num_args()) {
             // Get ancestors ids
             $ancestors = func_get_args();
-            $parent_id = end($ancestors);
+            $parent_id = (int) end($ancestors);
             $orderData[] = "parent_id = {$parent_id}";
 
             // Get ancestors data

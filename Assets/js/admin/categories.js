@@ -25,32 +25,40 @@
  * @license   New BSD License
  * @link      http://phalconeye.com/
  */
-var categoriesData = categoriesData || [];
+
 (function (window, $, root, data, undefined) {
     $(function () {
-        var container = $("#categories");
+        var container = $("#categories"),
+            defaultItem,
+            editAction,
+            addAction,
+            deleteAction,
+            manageAction;
 
-        var defaultItem = function () {
+        defaultItem = function () {
             return $('#default_category').html();
         };
 
-        var editAction = function () {
-            var id = '';
-            if ($(this).parents('li').length && $(this).parents('li').data('category-id')) {
-                id = $(this).parents('li').data('category-id');
+        editAction = function () {
+            var id = '',
+                parentItem = $(this).parents('li');
+
+            if (parentItem.length && parentItem.data('category-id')) {
+                id = parentItem.data('category-id');
             }
             root.widget.modal.open(data.link_edit + id, data);
         };
 
-        var addAction = function () {
+        addAction = function () {
             if (data.parent_id) {
                 data.link_create += '' + data.parent_id;
             }
             root.widget.modal.open(data.link_create, data);
         };
 
-        var deleteAction = function () {
+        deleteAction = function () {
             var id = $(this).parents('li').data('category-id');
+
             if (confirm(root.i18n._('Do you really want to delete this category?'))) {
                 if (data.parent_id) {
                     window.location.href = data.link_delete + id + '/' + data.parent_id;
@@ -61,14 +69,15 @@ var categoriesData = categoriesData || [];
             }
         };
 
-        var manageAction = function () {
+        manageAction = function () {
             window.location.href = window.location.pathname + '/' + $(this).parents('li').data('category-id');
         };
 
         container.sortable({
             update: function (event, ui) {
-                var order = [];
-                var index = 0;
+                var order = [],
+                    index = 0;
+
                 ui.item.parent().children().each(function () {
                     order[index++] = $(this).data('category-id');
                 });
@@ -98,5 +107,5 @@ var categoriesData = categoriesData || [];
             container.append(defaultItem().replace(/element-id/gi, id).replace('element-label', label));
         };
     });
-}(window, jQuery, PhalconEye, categoriesData));
+}(window, jQuery, PhalconEye, categoriesData || []));
 
