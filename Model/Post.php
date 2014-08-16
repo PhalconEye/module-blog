@@ -40,9 +40,6 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * @HasMany("id", "\Blog\Model\PostTag", "post_id", {
  *  "alias": "PostTags"
  * })
- * @HasManyToMany("id", "\Blog\Model\PostTag", "post_id", "tag_id", "\Blog\Model\Tag", "id", {
- *  "alias": "Tags"
- * })
  */
 class Post extends AbstractModel
 {
@@ -89,6 +86,13 @@ class Post extends AbstractModel
      * @Column(type="boolean", column="is_enabled")
      */
     public $is_enabled = true;
+
+    public function initialize()
+    {
+        $this->hasManyToMany("id", '\Blog\Model\PostTag', "post_id", "tag_id", '\Blog\Model\Tag', "id", [
+            "alias" => "Tags"
+        ]);
+    }
 
     /**
      * Get languages.

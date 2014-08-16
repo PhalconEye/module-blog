@@ -37,9 +37,6 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * @HasMany("id", "\Blog\Model\PostTag", "tag_id", {
  *  "alias": "PostTags"
  * })
- * @HasManyToMany("id", "\Blog\Model\PostTag", "tag_id", "post_id", "\Blog\Model\Post", "id", {
- *  "alias": "Posts"
- * })
  */
 class Tag extends AbstractModel
 {
@@ -54,6 +51,13 @@ class Tag extends AbstractModel
      * @Column(type="string", nullable=false, column="label", size="255")
      */
     public $label;
+
+    public function initialize()
+    {
+        $this->hasManyToMany("id", '\Blog\Model\PostTag', "tag_id", "post_id", '\Blog\Model\Post', "id", [
+            "alias" => "Posts"
+        ]);
+    }
 
     /**
      * Validations and business logic.
