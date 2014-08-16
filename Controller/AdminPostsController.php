@@ -21,6 +21,7 @@ namespace Blog\Controller;
 use Blog\Controller\Grid\PostsGrid;
 use Blog\Form\PostForm;
 use Blog\Model\Post;
+use Blog\Model\Tag;
 use Blog\Navigation\AdminNavigation;
 use Core\Controller\AbstractAdminController;
 
@@ -44,7 +45,12 @@ class AdminPostsController extends AbstractAdminController
     public function initialize()
     {
         parent::initialize();
+
         $this->view->navigation = new AdminNavigation;
+
+        // Assets setup.
+        $this->assets->addCss('assets/css/blog/admin.css');
+        $this->assets->addJs('assets/js/blog/admin/tags.js');
     }
 
     /**
@@ -78,7 +84,26 @@ class AdminPostsController extends AbstractAdminController
         }
 
         $post = $form->getEntity();
+        $tags = [];
+
+        // Attach related Tags
+        $requestedTags = $this->request->get('tags');
+        if ($requestedTags = array_filter($requestedTags)) {
+            foreach ($requestedTags as $tagName) {
+                if (!$tag = Tag::findFirstByLabel($tagName)) {
+                    $tag = new Tag;
+                    $tag->label = $tagName;
+                }
+                $tags[] = $tag;
+            }
+            $post->tags = $tags;
+        }
+
         $post->create();
+
+        // Todo: Investigate why this is required. eg. Related Tag models aren't saved on explicit create()
+        $post->save();
+
         $this->flashSession->success('Post added!');
 
         $this->response->redirect(['for' => 'admin-blog-posts-edit', 'id' => $post->id]);
@@ -107,6 +132,21 @@ class AdminPostsController extends AbstractAdminController
         }
 
         $post = $form->getEntity();
+        $tags = [];
+
+        // Attach related Tags
+        $requestedTags = $this->request->get('tags');
+        if ($requestedTags = array_filter($requestedTags)) {
+            foreach ($requestedTags as $tagName) {
+                if (!$tag = Tag::findFirstByLabel($tagName)) {
+                    $tag = new Tag;
+                    $tag->label = $tagName;
+                }
+                $tags[] = $tag;
+            }
+            $post->tags = $tags;
+        }
+
         $post->update();
         $this->flash->success('Post updated!');
     }

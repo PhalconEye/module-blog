@@ -37,6 +37,12 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * @BelongsTo("category_id", '\Blog\Model\Category', "id", {
  *  "alias": "Category"
  * })
+ * @HasMany("id", "\Blog\Model\PostTag", "post_id", {
+ *  "alias": "PostTags"
+ * })
+ * @HasManyToMany("id", "\Blog\Model\PostTag", "post_id", "tag_id", "\Blog\Model\Tag", "id", {
+ *  "alias": "Tags"
+ * })
  */
 class Post extends AbstractModel
 {
@@ -141,6 +147,12 @@ class Post extends AbstractModel
      */
     protected function beforeSave()
     {
+        // Remove Tags relations
+        if ($this->id) {
+            $this->getRelated('PostTags')->delete();
+        }
+
+        // Encode languages
         if (empty($this->languages)) {
             $this->languages = null;
         } elseif (is_array($this->languages)) {

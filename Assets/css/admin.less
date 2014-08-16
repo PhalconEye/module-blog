@@ -1,0 +1,71 @@
+.blog-tags {
+  background: #fff;
+  border: 1px solid #c0c0c0;
+  cursor: default;
+  margin: 0;
+  min-height: 31px;
+  padding: 0;
+}
+
+.blog-tags li {
+  background: #cfe4fa;
+  border: 1px solid #b0d2f9;
+  border-radius: 4px;
+  clear: none;
+  color: #222;
+  float: left;
+  font-size: 12px;
+  font-weight: normal;
+  list-style: none outside none;
+  margin: 2px 1px 1px;
+  padding: 2px 4px 4px;
+
+  span.tagRemove {
+    color: #5279a1;
+    cursor: pointer;
+    font-size: 12px;
+    padding-left: 4px;
+  }
+
+  span.tagRemove:hover {
+    color: #505050;
+    cursor: pointer;
+  }
+  &.clr {
+    background: rgba(0, 0, 0, 0);
+    border: medium none;
+    clear: both;
+    float: none;
+    height: 0;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  &.tagAdd {
+    background: rgba(0, 0, 0, 0);
+    border: medium none;
+    padding: 0;
+  }
+
+  &.tagAdd input {
+    border: medium none;
+  }
+}
+
+.blog-tags li input {
+  background: rgba(0, 0, 0, 0);
+  float: left;
+  font-size: 12px;
+  height: 26px;
+  min-width: 200px;
+
+  &:focus {
+    background: rgba(0, 0, 0, 0);
+    box-shadow: none;
+  }
+
+  &.tagsLoading {
+    background: url('@{baseUrl}assets/img/blog/loader.gif') no-repeat scroll 50% 50% rgba(0, 0, 0, 0);
+  }
+}
