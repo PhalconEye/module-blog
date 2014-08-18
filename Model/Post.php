@@ -31,11 +31,14 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * @author    Piotr Gasiorowski <p.gasiorowski@vipserv.org>
  * @copyright 2013-2014 PhalconEye Team
  * @license   New BSD License
- * @link      http://phalconeye.com/
+ * @link      i://phalconeye.com/
  *
  * @Source("blog_posts")
  * @BelongsTo("category_id", '\Blog\Model\Category', "id", {
  *  "alias": "Category"
+ * })
+ * @HasMany("id", "\Blog\Model\PostTag", "post_id", {
+ *  "alias": "PostTags"
  * })
  */
 class Post extends AbstractModel
@@ -83,6 +86,13 @@ class Post extends AbstractModel
      * @Column(type="boolean", column="is_enabled")
      */
     public $is_enabled = true;
+
+    public function initialize()
+    {
+        $this->hasManyToMany("id", '\Blog\Model\PostTag', "post_id", "tag_id", '\Blog\Model\Tag', "id", [
+            "alias" => "Tags"
+        ]);
+    }
 
     /**
      * Get languages.
@@ -141,6 +151,7 @@ class Post extends AbstractModel
      */
     protected function beforeSave()
     {
+        // Encode languages
         if (empty($this->languages)) {
             $this->languages = null;
         } elseif (is_array($this->languages)) {
@@ -166,6 +177,11 @@ class Post extends AbstractModel
      */
     public function beforeUpdate()
     {
+        // Remove PostTags relations
+        if ($this->id) {
+            $this->getRelated('PostTags')->delete();
+        }
+
         $this->_beforeUpdateSluggable();
         $this->_beforeUpdateTimestampable();
     }

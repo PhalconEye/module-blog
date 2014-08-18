@@ -19,10 +19,12 @@
 namespace Blog\Form;
 
 use Blog\Model\Category;
+use Blog\Model\Post;
+use Blog\Form\Element\Tags as TagsField;
 use Core\Form\CoreForm;
 use Core\Model\Language;
-use Blog\Model\Post;
 use Engine\Db\AbstractModel;
+use Engine\Exception;
 
 /**
  * Create Post
@@ -49,7 +51,10 @@ class PostForm extends CoreForm
             $entity = new Post();
         }
 
+        // We need to call these in given order since initialize() has already been run
         $this->addEntity($entity);
+        $this->setupTags($entity);
+        $this->setupFooter($entity);
     }
 
     /**
@@ -95,10 +100,43 @@ class PostForm extends CoreForm
             ->addCheckbox('is_enabled', 'Is enabled', null, 1, true, false);
 
         $content->setRequired('title');
+    }
 
+    /**
+     * Setup Post Tags
+     *
+     * @param AbstractModel $entity Entity object
+     */
+    protected function setupTags()
+    {
+        $url = $this->getDI()->get('url');
+        $entity = $this->getEntity();
+
+        // Setup tag field
+        $tags = new TagsField('tags[]');
+        $tags->setOption('label', 'Tags');
+        $tags->setAttribute('multiple', 'multiple');
+        $tags->setAttribute('data-link', $url->get(['for' => 'admin-blog-tags-search']));
+        if ($entity->id) {
+            $relatedTags = [];
+            foreach ($entity->getRelated('Tags') as $tag) {
+                $relatedTags[$tag->label] = $tag->label;
+            }
+
+            $tags->setValue($relatedTags);
+        }
+        $this->add($tags);
+    }
+
+    /**
+     * Setup form Footer
+     *
+     * @param AbstractModel $entity Entity object
+     */
+    protected function setupFooter($entity)
+    {
         $this->addFooterFieldSet()
-            ->addButton('create')
+            ->addButton($entity->id? 'save' : 'create')
             ->addButtonLink('cancel', 'Cancel', ['for' => 'admin-blog-posts']);
-
     }
 }
