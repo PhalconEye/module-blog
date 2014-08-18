@@ -31,7 +31,7 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * @author    Piotr Gasiorowski <p.gasiorowski@vipserv.org>
  * @copyright 2013-2014 PhalconEye Team
  * @license   New BSD License
- * @link      http://phalconeye.com/
+ * @link      i://phalconeye.com/
  *
  * @Source("blog_posts")
  * @BelongsTo("category_id", '\Blog\Model\Category', "id", {
@@ -151,11 +151,6 @@ class Post extends AbstractModel
      */
     protected function beforeSave()
     {
-        // Remove Tags relations
-        if ($this->id) {
-            $this->getRelated('PostTags')->delete();
-        }
-
         // Encode languages
         if (empty($this->languages)) {
             $this->languages = null;
@@ -182,6 +177,11 @@ class Post extends AbstractModel
      */
     public function beforeUpdate()
     {
+        // Remove PostTags relations
+        if ($this->id) {
+            $this->getRelated('PostTags')->delete();
+        }
+
         $this->_beforeUpdateSluggable();
         $this->_beforeUpdateTimestampable();
     }

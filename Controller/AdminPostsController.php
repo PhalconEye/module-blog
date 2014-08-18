@@ -99,9 +99,6 @@ class AdminPostsController extends AbstractAdminController
             $post->tags = $tags;
         }
 
-        $post->create();
-
-        // Todo: Investigate why this is required. eg. Related Tag models aren't saved on explicit create()
         $post->save();
 
         $this->flashSession->success('Post added!');
