@@ -33,6 +33,8 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * @license   New BSD License
  * @link      i://phalconeye.com/
  *
+ * @method    static \Blog\Model\Post|false findFirstBySlug($slug) Find Post by slug
+ *
  * @Source("blog_posts")
  * @BelongsTo("category_id", '\Blog\Model\Category', "id", {
  *  "alias": "Category"

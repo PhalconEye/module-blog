@@ -45,6 +45,7 @@ class PostsGrid extends CoreGrid
     public function getSource()
     {
         $builder = new Builder();
+        $builder->columns(['id', 'title', 'slug', 'is_enabled', 'creation_date', 'modified_date']);
         $builder->from('Blog\Model\Post');
 
         return $builder;
@@ -92,8 +93,8 @@ class PostsGrid extends CoreGrid
                     self::COLUMN_PARAM_OUTPUT_LOGIC =>
                         function (GridItem $item, $di) use ($url) {
                             return sprintf(
-                                '<a href="%s">%s<br /><small>[%s]</small></a>',
-                                $url->get("/blog/" . $item['slug']),
+                                '<a href="%s" target="_blank">%s</a><br /><small>[%s]</small>',
+                                $url->get(['for' => 'blog-post', 'slug' => $item['slug']]),
                                 $item['title'],
                                 $item['slug']
                             );

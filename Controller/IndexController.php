@@ -18,6 +18,9 @@ namespace Blog\Controller;
 
 use Blog\Model\Post;
 use Core\Controller\AbstractController;
+use Phalcon\Mvc\Dispatcher\Exception;
+use Phalcon\Mvc\Model\Query\Builder;
+use User\Model\User;
 
 /**
  * Index controller.
@@ -30,6 +33,16 @@ use Core\Controller\AbstractController;
 class IndexController extends AbstractController
 {
     /**
+     * @{inheritdoc}
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->assets->addCss('assets/css/blog/site.css');
+    }
+
+    /**
      * Module index action.
      *
      * @return void
@@ -38,11 +51,55 @@ class IndexController extends AbstractController
      */
     public function indexAction()
     {
-        $this->renderParts();
+        $session = $this->getDI()->get('session');
 
-        $this->view->posts = Post::find([
-            'is_enabled = 1',
-            'order' => 'creation_date DESC'
-        ]);
+        $builder = new Builder();
+        $builder
+            ->from('Blog\Model\Post')
+            ->orderBy('creation_date DESC');
+
+        // Apply language restrictions
+        if ($session->has('language')) {
+            $builder
+                ->andWhere('languages IS NULL')
+                ->orWhere(
+                    'languages LIKE :language:', [
+                        'language' => '%"'. $session->get('language') .'"%'
+                    ]
+                );
+            ;
+        }
+
+        // Show all articles to Admins otherwise only enabled
+        if (false == User::getViewer()->isAdmin()) {
+            $builder->andWhere('is_enabled = 1');
+        }
+        // echo $builder->getPhql(); exit;
+
+        $this->renderParts();
+        $this->view->posts = $posts = $builder->getQuery()->execute();
+    }
+
+    /**
+     * Post view.
+     *
+     * @return void
+     *
+     * @Route("/{slug:[a-zA-Z0-9\/_|+ -]+}", methods={"GET"}, name="blog-post")
+     */
+    public function postAction($slug)
+    {
+        // Article not found
+        if (!$post = Post::findFirstBySlug($slug)) {
+            throw new Exception;
+        }
+
+        // Article not enabled
+        if (!$post->is_enabled && !User::getViewer()->isAdmin()) {
+            throw new Exception;
+        }
+
+        $this->renderParts();
+        $this->view->post = $post;
     }
 }

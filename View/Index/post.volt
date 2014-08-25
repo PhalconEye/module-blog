@@ -17,42 +17,15 @@
 
 {% extends "Core/View/layouts/main.volt" %}
 
-{% block title %}{{ "Blog" |i18n }}{% endblock %}
+{% block title %} Post - Title {% endblock %}
 
 {% block content %}
 <div id="module-blog" class="list">
 
-<h2>{{ "Blog" |i18n }}</h2>
+<h2>{{ "Post - Title" }}</h2>
 
-{% for post in posts %}
-<article>
-    <a href="{{ url(['for': 'blog-post', 'slug': post.slug]) }}" rel="contents">
-        <h3>{{ post.title }}</h3>
-    </a>
-
-    <div class="post-details">
-        <span>{{ post.creation_date }}</span>
-        <span>{{ post.category.title }}</span>
-    </div>
-
-    <div class="post-description">
-        {{ post.description }}
-        <a class="post-read-more" rel="contents" href="{{ url(['for': 'blog-post', 'slug': post.slug]) }}">
-            {{ "Read more" |i18n }}
-        </a>
-    </div>
-
-    {% if post.tags %}
-    <div class="post-tags">
-        {% for item in post.tags %}
-        <a class="btn">{{ item.label }}</a>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-</article>
-
-{% endfor %}
-
+<div>
+{{ post.text }}
 </div>
+
 {% endblock %}
