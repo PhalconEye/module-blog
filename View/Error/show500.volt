@@ -15,4 +15,4 @@
   +------------------------------------------------------------------------+
 #}
 
-{% extends "Core/View/layouts/main.volt" %}
+{% extends "Core/View/Error/show500.volt" %}

@@ -74,7 +74,6 @@ class IndexController extends AbstractController
         if (false == User::getViewer()->isAdmin()) {
             $builder->andWhere('is_enabled = 1');
         }
-        // echo $builder->getPhql(); exit;
 
         $this->renderParts();
         $this->view->posts = $posts = $builder->getQuery()->execute();
