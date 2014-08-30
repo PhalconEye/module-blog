@@ -15,7 +15,8 @@
  +------------------------------------------------------------------------+
 #}
 
-{% extends "Core/View/layouts/admin.volt" %}
+{# {% extends "Core/View/layouts/admin.volt" %}  #}
+{% extends "Core/View/AdminModule/index.volt" %}
 
 {% block title %}{{ 'Blog'|i18n }}{% endblock %}
 
@@ -23,17 +24,6 @@
 <div class="navbar navbar-header">
 <div class="navbar-inner">
     {{ navigation.render() }}
-</div>
-</div>
-{% endblock %}
-
-{% block content %}
-<div class="span12">
-<div class="row-fluid">
-    <div class="row-fluid">
-        <h2>{{ 'Blog'|i18n }}</h2>
-        <p>No options yet...</p>
-    </div>
 </div>
 </div>
 {% endblock %}

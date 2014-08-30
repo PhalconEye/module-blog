@@ -18,6 +18,7 @@ namespace Blog\Controller;
 
 use Blog\Model\Post;
 use Core\Controller\AbstractController;
+use Core\Model\Settings;
 use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\Model\Query\Builder;
 use User\Model\User;

@@ -20,12 +20,51 @@
 {% block title %} Post - Title {% endblock %}
 
 {% block content %}
-<div id="module-blog" class="list">
+<article id="module-blog" class="post">
 
-<h2>{{ "Post - Title" }}</h2>
+  <h2>{{ post.title }}</h2>
 
-<div>
-{{ post.text }}
-</div>
+  <header>
+    {% if helper('setting', 'blog').get('post_show_date') == 1 %}
+      <small class="creation-data">{{ post.creation_date }}</small>
+    {% endif %}
+    {% if helper('setting', 'blog').get('post_show_category_link') == 1 %}
+      <small class="category-title">{{ post.category.title }}</small>
+    {% endif %}
+    {% if post.tags and helper('setting', 'blog').get('post_show_tags') == 1 %}
+      <div class="post-tags">
+        {% for item in post.tags %}
+          <a class="btn">{{ item.label }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </header>
 
+  {% if helper('setting', 'blog').get('post_show_description', 1) %}
+  <div class="post-description">
+    {{ post.description }}
+  </div>
+  {% endif %}
+
+  <div class="post-text">
+    {{ post.text }}
+  </div>
+
+  <div class="footer">
+    {% if helper('setting', 'blog').get('post_show_date') == 2 %}
+      <small class="creation-data">{{ post.creation_date }}</small>
+    {% endif %}
+    {% if helper('setting', 'blog').get('post_show_category_link') == 2 %}
+      <small class="category-title">{{ post.category.title }}</small>
+    {% endif %}
+    {% if post.tags and helper('setting', 'blog').get('post_show_tags') == 2 %}
+      <div class="post-tags">
+        {% for item in post.tags %}
+          <a class="btn">{{ item.label }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+ </article>
 {% endblock %}

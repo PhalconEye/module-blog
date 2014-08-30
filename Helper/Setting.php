@@ -16,43 +16,26 @@
   +------------------------------------------------------------------------+
 */
 
-namespace Blog\Controller;
+namespace Blog\Helper;
 
-use Core\Controller\AdminModuleController;
-use Blog\Navigation\AdminNavigation;
+use Core\Helper\Setting as CoreSetting;
 
 /**
- * Admin Index Controller.
+ * System settings helper.
  *
  * @category  PhalconEye
- * @package   Blog\Controller
+ * @package   Core\Helper
  * @author    Piotr Gasiorowski <p.gasiorowski@vipserv.org>
  * @copyright 2013-2014 PhalconEye Team
  * @license   New BSD License
  * @link      http://phalconeye.com/
- *
- * @RoutePrefix("/admin/module/blog")
  */
-class AdminIndexController extends AdminModuleController
+class Setting extends CoreSetting
 {
-    /**
-     * @{inheritdoc}
-     */
-    public function initialize()
-    {
-        parent::initialize();
-        $this->view->navigation = new AdminNavigation;
-    }
+    const
+        /**
+         * System setting prefix
+         */
+        PREFIX = 'blog';
 
-    /**
-     * Module index action.
-     *
-     * @return void
-     *
-     * @Route("/", methods={"GET", "POST"}, name="admin-blog")
-     */
-    public function indexAction($module = 'blog')
-    {
-        parent::indexAction('blog');
-    }
 }
