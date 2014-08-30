@@ -65,15 +65,12 @@ class PostForm extends CoreForm
         $content = $this->addContentFieldSet()
             ->addText('title')
             ->addText('slug')
-            // todo: make multiselect
-            // todo: use indentions
             ->addSelect(
                 'category_id',
                 'Category',
                 '',
-                Category::find(),
-                null,
-                ['using' => ['id', 'title']]
+                Category::getNestedCategories(),
+                null
             )
             ->addCkEditor(
                 'description',
