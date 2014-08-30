@@ -18,9 +18,9 @@
 
 namespace Blog\Form;
 
-use Blog\Model\Category;
 use Blog\Model\Post;
 use Blog\Form\Element\Tags as TagsField;
+use Blog\Form\Element\Categories as CategoriesField;
 use Core\Form\CoreForm;
 use Core\Model\Language;
 use Engine\Db\AbstractModel;
@@ -65,13 +65,7 @@ class PostForm extends CoreForm
         $content = $this->addContentFieldSet()
             ->addText('title')
             ->addText('slug')
-            ->addSelect(
-                'category_id',
-                'Category',
-                '',
-                Category::getNestedCategories(),
-                null
-            )
+            ->add((new CategoriesField('category_id'))->setOption('label', 'Category'))
             ->addCkEditor(
                 'description',
                 'Short Description',
