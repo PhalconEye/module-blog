@@ -51,7 +51,7 @@
     {% if post.tags and helper('setting', 'blog').get('list_show_tags', 1) %}
       <div class="post-tags">
         {% for item in post.tags %}
-          <a class="btn">{{ item.label }}</a>
+          <a class="tag">{{ item.label }}</a>
         {% endfor %}
       </div>
     {% endif %}
