@@ -15,7 +15,6 @@
  +------------------------------------------------------------------------+
 #}
 
-{# {% extends "Core/View/layouts/admin.volt" %}  #}
 {% extends "Core/View/AdminModule/index.volt" %}
 
 {% block title %}{{ 'Blog'|i18n }}{% endblock %}
