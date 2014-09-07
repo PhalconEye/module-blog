@@ -56,8 +56,6 @@ class AdminPostsController extends AbstractAdminController
     /**
      * Module index action
      *
-     * @return \Phalcon\Http\ResponseInterface|null
-     *
      * @Route("/browse{params:([\0-9]+)*}", methods={"GET"}, name="admin-blog-posts")
      */
     public function indexAction()
@@ -70,8 +68,6 @@ class AdminPostsController extends AbstractAdminController
 
     /**
      * Create post
-     *
-     * @return \Phalcon\Http\ResponseInterface|null
      *
      * @Route("/create", methods={"GET", "POST"}, name="admin-blog-posts-create")
      */
@@ -99,8 +95,8 @@ class AdminPostsController extends AbstractAdminController
             $post->tags = $tags;
         }
 
+        $this->_handleImageUpload($form);
         $post->save();
-
         $this->flashSession->success('Post added!');
 
         $this->response->redirect(['for' => 'admin-blog-posts-edit', 'id' => $post->id]);
@@ -110,8 +106,6 @@ class AdminPostsController extends AbstractAdminController
      * Edit post
      *
      * @param int $id Post identity
-     *
-     * @return \Phalcon\Http\ResponseInterface|null
      *
      * @Route("/edit/{id:[0-9]+}", methods={"GET", "POST"}, name="admin-blog-posts-edit")
      */
@@ -144,6 +138,8 @@ class AdminPostsController extends AbstractAdminController
             $post->tags = $tags;
         }
 
+        $this->_handleImageUpload($form);
+
         $post->update();
         $this->flash->success('Post updated!');
     }
@@ -152,8 +148,6 @@ class AdminPostsController extends AbstractAdminController
      * Delete post.
      *
      * @param int $id Post identity
-     *
-     * @return \Phalcon\Http\ResponseInterface|null
      *
      * @Get("/delete/{id:[0-9]+}", name="admin-blog-posts-delete")
      */
@@ -166,5 +160,48 @@ class AdminPostsController extends AbstractAdminController
         }
 
         $this->response->redirect(['for' => 'admin-blog-posts']);
+    }
+
+    /**
+     * Handles upload of post image
+     *
+     * @param PostForm $form Instance
+     *
+     * todo: Abstract PhalconEye filesystem (eg. public/files folder)
+     */
+    private function _handleImageUpload(PostForm $form)
+    {
+        /** @var Post $post */
+        $post = $form->getEntity();
+        $hasThumbnail = $form->hasFiles('thumbnail');
+
+        if (file_exists(Post::THUMBNAIL_PATH) == false) {
+            mkdir(Post::THUMBNAIL_PATH, 0777, true);
+        }
+
+        if ($form->hasFiles('image')) {
+            $file = $form->getFiles('image');
+            $fileName = md5(mt_rand()) . '.' . pathinfo($file->getName(), PATHINFO_EXTENSION);
+            $target = Post::IMAGE_PATH . '/' . $fileName;
+
+            // Create thumbnail
+            if (move_uploaded_file($file->getTempName(),  $target)) {
+                $post->image = $target;
+                $form->setValue('image', $target);
+                if ($hasThumbnail == false && $post->createThumbnail()) {
+                    $form->setValue('thumbnail', Post::THUMBNAIL_PATH .'/'. '/' . $fileName);
+                }
+            }
+        }
+
+        if ($hasThumbnail) {
+            $file = $form->getFiles('thumbnail');
+            $fileName = md5(mt_rand()) . '.' . pathinfo($file->getName(), PATHINFO_EXTENSION);
+            $target = Post::THUMBNAIL_PATH . '/' . $fileName;
+            if (move_uploaded_file($file->getTempName(), $target)) {
+                $form->setValue('thumbnail', $target);
+                $post->thumbnail = $target;
+            }
+        }
     }
 }

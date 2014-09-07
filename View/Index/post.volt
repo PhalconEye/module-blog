@@ -20,9 +20,10 @@
 {% block title %} Post - Title {% endblock %}
 
 {% block content %}
-<article id="module-blog" class="post">
+<div id="module-blog" class="post">
+<article {% if !post.is_enabled %}class="disabled"{% endif %}>
 
-  <h2>{{ post.title }}</h2>
+  <h2 class="title">{{ post.title }}</h2>
 
   <header>
     {% if helper('setting', 'blog').get('post_show_date') == 1 %}
@@ -43,6 +44,12 @@
   {% if helper('setting', 'blog').get('post_show_description', 1) %}
   <div class="post-description">
     {{ post.description }}
+  </div>
+  {% endif %}
+
+  {% if post.image %}
+  <div class="post-image">
+      <img src="{{ url(post.image) }}" alt="{{ post.title }}" />
   </div>
   {% endif %}
 
@@ -67,4 +74,5 @@
   </div>
 
  </article>
+</div>
 {% endblock %}

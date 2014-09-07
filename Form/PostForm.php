@@ -21,9 +21,9 @@ namespace Blog\Form;
 use Blog\Model\Post;
 use Blog\Form\Element\Tags as TagsField;
 use Blog\Form\Element\Categories as CategoriesField;
-use Core\Form\CoreForm;
+use Core\Form\FileForm;
 use Core\Model\Language;
-use Engine\Db\AbstractModel;
+use Core\Model\Settings;
 use Engine\Exception;
 
 /**
@@ -36,14 +36,14 @@ use Engine\Exception;
  * @license   New BSD License
  * @link      http://phalconeye.com/
  */
-class PostForm extends CoreForm
+class PostForm extends FileForm
 {
     /**
      * Constructor
      *
-     * @param AbstractModel $entity Entity object
+     * @param Post $entity Instance
      */
-    public function __construct(AbstractModel $entity = null)
+    public function __construct(Post $entity = null)
     {
         parent::__construct();
 
@@ -54,6 +54,7 @@ class PostForm extends CoreForm
         // We need to call these in given order since initialize() has already been run
         $this->addEntity($entity);
         $this->setupTags($entity);
+        $this->setupUpload($entity);
         $this->setupFooter($entity);
     }
 
@@ -96,12 +97,11 @@ class PostForm extends CoreForm
     /**
      * Setup Post Tags
      *
-     * @param AbstractModel $entity Entity object
+     * @param Post $entity Instance
      */
-    protected function setupTags()
+    protected function setupTags(Post $entity)
     {
         $url = $this->getDI()->get('url');
-        $entity = $this->getEntity();
 
         // Setup tag field
         $tags = new TagsField('tags[]');
@@ -120,11 +120,62 @@ class PostForm extends CoreForm
     }
 
     /**
+     * Setup upload field and preview thumbnail
+     *
+     * @param Post $entity Instance
+     */
+    protected function setupUpload(Post $entity)
+    {
+        $this->addFile(
+            'image',
+            'Image',
+            null,
+            true,
+            $entity->image
+        )
+        ->addFile(
+            'thumbnail',
+            'Thumbnail',
+            null,
+            true,
+            $entity->thumbnail
+        );
+
+        $hasGd = extension_loaded('gd');
+        $hasImagick = extension_loaded('imagick');
+
+        if ($hasGd || $hasImagick) {
+            $this->setImageTransformation('image', [
+                'adapter' => $hasImagick ? 'Imagick' : 'GD',
+                'resize' =>  [
+                    Settings::getValue('blog', 'image_width', ConfigForm::DEFAULT_IMG_WIDTH),
+                    Settings::getValue('blog', 'image_height', ConfigForm::DEFAULT_IMG_HEIGHT)
+                ],
+                'crop' => [
+                    Settings::getValue('blog', 'image_width', ConfigForm::DEFAULT_IMG_WIDTH),
+                    Settings::getValue('blog', 'image_height', ConfigForm::DEFAULT_IMG_HEIGHT)
+                ]
+            ])
+            ->setImageTransformation('thumbnail', [
+                'adapter' => $hasImagick ? 'Imagick' : 'GD' ,
+                'resize' =>  [
+                    Settings::getValue('blog', 'thumbnail_width', ConfigForm::DEFAULT_THUMBNAIL_WIDTH),
+                    Settings::getValue('blog', 'thumbnail_height', ConfigForm::DEFAULT_THUMBNAIL_HEIGHT)
+                ],
+                'crop' => [
+                    Settings::getValue('blog', 'thumbnail_width', ConfigForm::DEFAULT_THUMBNAIL_WIDTH),
+                    Settings::getValue('blog', 'thumbnail_width', ConfigForm::DEFAULT_THUMBNAIL_WIDTH)
+                ]
+            ]);
+        }
+    }
+
+    /**
      * Setup form Footer
      *
-     * @param AbstractModel $entity Entity object
+     * @param Post $entity Instance
      */
-    protected function setupFooter($entity)
+    protected function setupFooter(Post $entity)
     {
         $this->addFooterFieldSet()
             ->addButton($entity->id? 'save' : 'create')

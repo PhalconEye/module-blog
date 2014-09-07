@@ -32,15 +32,62 @@ use Core\Form\CoreForm;
  */
 class ConfigForm extends CoreForm
 {
+    const
+        // Default width for re-sized image
+        DEFAULT_IMG_WIDTH = 1024,
+
+        // Default height for re-sized image
+        DEFAULT_IMG_HEIGHT = 768,
+
+        // Default width for re-sized thumbnail
+        DEFAULT_THUMBNAIL_WIDTH = 200,
+
+        // Default height for re-sized thumbnail
+        DEFAULT_THUMBNAIL_HEIGHT = 150;
+
     /**
      * Initialize form
      */
     public function initialize()
     {
+        $this->addContentFieldSet('Image options')
+
+            ->addText(
+                'image_width',
+                'Image width (px)',
+                null,
+                self::DEFAULT_IMG_WIDTH
+            )
+            ->addText(
+                'image_height',
+                'Image height (px)',
+                null,
+                self::DEFAULT_IMG_HEIGHT
+            )
+            ->addText(
+                'thumbnail_width',
+                'Thumbnail width (px)',
+                null,
+                self::DEFAULT_THUMBNAIL_WIDTH
+            )
+            ->addText(
+                'thumbnail_height',
+                'Thumbnail height (px)',
+                null,
+                self::DEFAULT_THUMBNAIL_HEIGHT
+            );
+
         $common = [0 => 'No', 1 => 'Above post', 2 => 'Under post'];
 
         $this->addContentFieldSet('Post View')
 
+            ->addSelect(
+                'post_hits',
+                'Collect post hits',
+                null,
+                [0 => 'No', 1 => 'Yes'],
+                0
+            )
             ->addSelect(
                 'post_show_date',
                 'Show creation date',

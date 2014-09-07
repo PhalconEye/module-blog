@@ -18,7 +18,6 @@ namespace Blog\Controller;
 
 use Blog\Model\Post;
 use Core\Controller\AbstractController;
-use Core\Model\Settings;
 use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\Model\Query\Builder;
 use User\Model\User;
@@ -33,6 +32,9 @@ use User\Model\User;
  */
 class IndexController extends AbstractController
 {
+    /** @var Post|null */
+    private $hitPost = null;
+
     /**
      * @{inheritdoc}
      */
@@ -100,6 +102,16 @@ class IndexController extends AbstractController
         }
 
         $this->renderParts();
-        $this->view->post = $post;
+        $this->view->post = $this->hitPost = $post;
+    }
+
+    /**
+     * We need to hit the counter here due to post Update hooks
+     */
+    public function __destruct()
+    {
+        if ($this->hitPost) {
+            $this->hitPost->hit();
+        }
     }
 }

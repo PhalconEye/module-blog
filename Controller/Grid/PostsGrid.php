@@ -19,6 +19,7 @@
 namespace Blog\Controller\Grid;
 
 use Core\Controller\Grid\CoreGrid;
+use Core\Model\Settings;
 use Engine\Form;
 use Engine\Grid\GridItem;
 use Phalcon\Db\Column;
@@ -44,8 +45,14 @@ class PostsGrid extends CoreGrid
      */
     public function getSource()
     {
+        $columns = ['id', 'title', 'slug', 'is_enabled', 'creation_date', 'modified_date'];
+
+        if (Settings::getValue('blog', 'post_hits', 0)) {
+            $columns[] = 'hits';
+        }
+
         $builder = new Builder();
-        $builder->columns(['id', 'title', 'slug', 'is_enabled', 'creation_date', 'modified_date']);
+        $builder->columns($columns);
         $builder->from('Blog\Model\Post');
 
         return $builder;
@@ -103,5 +110,9 @@ class PostsGrid extends CoreGrid
             ->addTextColumn('is_enabled', 'Enabled')
             ->addTextColumn('creation_date', 'Created')
             ->addTextColumn('modified_date', 'Updated');
+
+            if (Settings::getValue('blog', 'post_hits', 0)) {
+                $this->addTextColumn('hits', 'Hits');
+            }
     }
 }

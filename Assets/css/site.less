@@ -1,11 +1,27 @@
 #module-blog article {
   margin: 0.25em 0;
-  padding: 1em;
+  padding: 0 1em;
   border: 1px solid;
 
-  h3 {
+  h3.title {
     margin-bottom: 0;
   }
+  & > a {
+    text-decoration: none;
+  }
+}
+
+#module-blog .wrapper {
+  margin-top: 0.4em;
+
+  .thumbnail, .post {
+    display: table-cell;
+    vertical-align: top;
+  }
+  .thumbnail img {
+    margin-right: 0.5em;
+  }
+
   .post-details span {
     font-size: 0.75em;
 
@@ -16,14 +32,25 @@
   }
 }
 
+#module-blog .post-image {
+  text-align: center;
+  margin: 1em;
+}
+
 #module-blog .post-tags {
   margin-top: 0.5em;
 
   a.tag {
-    height: 0.5em;
-    line-height: 0.5em;
     color: #ffffff;
     background-color: #428bca;
     padding: 0.22em;
+    margin-bottom: 0.5em;
+    display: inline-block;
   }
+}
+
+#module-blog article.disabled h2.title:before,
+#module-blog article.disabled h3.title:before {
+  content: "[DISABLED] ";
+  color: #d3d3d3;
 }

@@ -18,6 +18,8 @@
 
 namespace Blog\Model;
 
+use Blog\Form\ConfigForm;
+use Core\Model\Settings;
 use Engine\Db\AbstractModel;
 use Engine\Db\Model\Behavior\Sluggable;
 use Engine\Db\Model\Behavior\Timestampable;
@@ -51,6 +53,17 @@ class Post extends AbstractModel
         Timestampable::beforeCreate as protected _beforeCreateTimestampable;
         Timestampable::beforeUpdate as protected _beforeUpdateTimestampable;
     }
+
+    const
+        /**
+         * Path, URL to images folder
+         */
+        IMAGE_PATH = 'files/blog/image',
+
+        /**
+         * Path, URL to thumbnails folder
+         */
+        THUMBNAIL_PATH = 'files/blog/image/thumbnail';
 
     /**
      * @Primary
@@ -89,11 +102,40 @@ class Post extends AbstractModel
      */
     public $is_enabled = true;
 
+    /**
+     * @Column(type="integer", nullable=false, column="hits", size="11")
+     */
+    public $hits = 0;
+
+    /**
+     * @Column(type="string", nullable=true, column="image", size="37")
+     */
+    public $image = null;
+
+    /**
+     * @Column(type="string", nullable=true, column="thumbnail", size="37")
+     */
+    public $thumbnail = null;
+
+    /**
+     * Initialize model
+     */
     public function initialize()
     {
         $this->hasManyToMany("id", '\Blog\Model\PostTag', "post_id", "tag_id", '\Blog\Model\Tag', "id", [
             "alias" => "Tags"
         ]);
+    }
+
+    /**
+     * Increase hits counter
+     */
+    public function hit()
+    {
+        if (Settings::getValue('blog', 'post_hits', 0)) {
+            $this->hits++;
+            $this->update();
+        }
     }
 
     /**
@@ -146,6 +188,14 @@ class Post extends AbstractModel
         if (!empty($this->languages)) {
             $this->languages = json_decode($this->languages);
         }
+
+        // Strip images
+        if ($this->image) {
+            $this->image = self::IMAGE_PATH .'/'. $this->image;
+        }
+        if ($this->thumbnail) {
+            $this->thumbnail = self::THUMBNAIL_PATH .'/'. $this->thumbnail;
+        }
     }
 
     /**
@@ -158,6 +208,14 @@ class Post extends AbstractModel
             $this->languages = null;
         } elseif (is_array($this->languages)) {
             $this->languages = json_encode($this->languages);
+        }
+
+        // Strip images
+        if ($this->image) {
+            $this->image = pathinfo($this->image, PATHINFO_BASENAME);
+        }
+        if ($this->thumbnail) {
+            $this->thumbnail = pathinfo($this->thumbnail, PATHINFO_BASENAME);
         }
     }
 
@@ -203,4 +261,34 @@ class Post extends AbstractModel
 
         return $this->validationHasFailed() !== true;
     }
+
+
+    /**
+     * Creates thumbnail from post image
+     *
+     * @return bool
+     */
+    public function createThumbnail()
+    {
+        $hasGd = extension_loaded('gd');
+        $hasImagick = extension_loaded('imagick');
+
+        if ($hasGd || $hasImagick) {
+
+            /** @var \Phalcon\Image\AdapterInterface $adapter **/
+            $adapterClass = 'Phalcon\Image\Adapter\\'. ($hasGd ? 'GD' : 'Imagick');
+            $adapter = new $adapterClass($this->image);
+            $adapter->resize(
+                Settings::getValue('blog', 'thumbnail_width', ConfigForm::DEFAULT_THUMBNAIL_WIDTH),
+                Settings::getValue('blog', 'thumbnail_height', ConfigForm::DEFAULT_THUMBNAIL_HEIGHT)
+            );
+
+            if ($adapter->save(self::THUMBNAIL_PATH .'/'. pathinfo($this->image, PATHINFO_BASENAME))) {
+                $this->thumbnail = $this->image;
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -25,38 +25,50 @@
 <h2>{{ "Blog" |i18n }}</h2>
 
 {% for post in posts %}
-<article>
+<article {% if !post.is_enabled %}class="disabled"{% endif %}>
 
   <a href="{{ url(['for': 'blog-post', 'slug': post.slug]) }}" rel="contents">
-    <h3>{{ post.title }}</h3>
+    <h3 class="title">{{ post.title }}</h3>
   </a>
 
-  {% if helper('setting', 'blog').get('list_show_header', 1) %}
-  <header>
-    <small class="creation-data">{{ post.creation_date }}</small>
-    <small class="category-title">{{ post.category.title }}</small>
-  </header>
-  {% endif %}
+  <div class="wrapper">
 
-  <div class="post-description">
-    {{ post.description }}
-    {% if helper('setting', 'blog').get('list_show_read_more', 1) %}
-      <a class="post-read-more" rel="contents" href="{{ url(['for': 'blog-post', 'slug': post.slug]) }}">
-        {{ "Read more" |i18n }}
+    {% if post.thumbnail %}
+    <div class="thumbnail">
+      <a href="{{ url(['for': 'blog-post', 'slug': post.slug]) }}" rel="contents">
+        <img src="{{ url(post.thumbnail) }}" alt="{{ post.title }}" />
       </a>
+    </div>
     {% endif %}
-  </div>
 
-  <div class="footer">
-    {% if post.tags and helper('setting', 'blog').get('list_show_tags', 1) %}
-      <div class="post-tags">
-        {% for item in post.tags %}
-          <a class="tag">{{ item.label }}</a>
-        {% endfor %}
+    <div class="post">
+      {% if helper('setting', 'blog').get('list_show_header', 1) %}
+      <header>
+        <small class="creation-data">{{ post.creation_date }}</small>
+        <small class="category-title">{{ post.category.title }}</small>
+      </header>
+      {% endif %}
+
+      <div class="post-description">
+        {{ post.description }}
+        {% if helper('setting', 'blog').get('list_show_read_more', 1) %}
+          <a class="post-read-more" rel="contents" href="{{ url(['for': 'blog-post', 'slug': post.slug]) }}">
+            {{ "Read more" |i18n }}
+          </a>
+        {% endif %}
       </div>
-    {% endif %}
-  </div>
 
+      <div class="footer">
+        {% if post.tags and helper('setting', 'blog').get('list_show_tags', 1) %}
+          <div class="post-tags">
+            {% for item in post.tags %}
+              <a class="tag">{{ item.label }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </article>
 {% endfor %}
 
