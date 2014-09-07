@@ -189,7 +189,7 @@ class AdminPostsController extends AbstractAdminController
                 $post->image = $target;
                 $form->setValue('image', $target);
                 if ($hasThumbnail == false && $post->createThumbnail()) {
-                    $form->setValue('thumbnail', Post::THUMBNAIL_PATH .'/'. '/' . $fileName);
+                    $form->setValue('thumbnail', Post::THUMBNAIL_PATH .'/'. $fileName);
                 }
             }
         }
