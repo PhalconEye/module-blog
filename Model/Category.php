@@ -33,6 +33,8 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * @license   New BSD License
  * @link      http://phalconeye.com/
  *
+ * @method    static \Blog\Model\Category|false findFirstBySlug($slug) Find Category by slug
+ *
  * @Source("blog_categories")
  * @BelongsTo("parent_id", '\Blog\Model\Category', "id", {
  *  "alias": "ParentCategory"
@@ -79,18 +81,6 @@ class Category extends AbstractModel
     public $is_enabled = true;
 
     /**
-     * Get related sub categories.
-     *
-     * @param array $arguments Entity params.
-     *
-     * @return Category[]
-     */
-    public function getSubCategories($arguments = [])
-    {
-        return $this->getRelated('SubCategories', $arguments);
-    }
-
-    /**
      * Get parent Category.
      *
      * @param array $arguments Entity params.
@@ -103,6 +93,35 @@ class Category extends AbstractModel
             return $this->getRelated('ParentCategory', $arguments);
         }
         return null;
+    }
+
+    /**
+     * Get related sub categories.
+     *
+     * @param array $arguments Entity params.
+     *
+     * @return Category[]
+     */
+    public function getSubCategories($arguments = [])
+    {
+        return $this->getRelated('SubCategories', $arguments);
+    }
+
+    /**
+     * Get ids of all nested categories
+     *
+     * @return array
+     */
+    public function getNestedCategoriesIds()
+    {
+        $ids = [];
+
+        foreach($this->getSubCategories() as $category) {
+            $ids[] = $category->id;
+            array_merge($ids, $category->getNestedCategoriesIds());
+        }
+
+        return $ids;
     }
 
     /**

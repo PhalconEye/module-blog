@@ -17,13 +17,15 @@
 
 {% extends "Core/View/layouts/main.volt" %}
 
-{% block title %}{{ "Blog" |i18n }}{% endblock %}
+{% block title %}{{ "Blog" |i18n }} - {{ blogTag.label }}{% endblock %}
 
 {% block content %}
-<div id="module-blog" class="list">
+<div id="module-blog" class="list category-list">
 
 <h2 class="breadcrumb">
   <a href="{{ url(['for': 'blog']) }}">{{ "Blog" |i18n }}</a>
+  <span class="category-separator"> &gt; </span>
+  <a href="{{ url(['for': 'blog-tag', 'tag': blogTag.label]) }}">{{ blogTag.label }}</a>
 </h2>
 
 {% for post in posts %}

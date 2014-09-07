@@ -107,7 +107,7 @@ class PostForm extends FileForm
         $tags = new TagsField('tags[]');
         $tags->setOption('label', 'Tags');
         $tags->setAttribute('multiple', 'multiple');
-        $tags->setAttribute('data-link', $url->get(['for' => 'admin-blog-tags-search']));
+        $tags->setAttribute('data-link', $url->get(['for' => 'blog-tags-search']));
         if ($entity->id) {
             $relatedTags = [];
             foreach ($entity->getRelated('Tags') as $tag) {

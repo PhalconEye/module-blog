@@ -21,21 +21,28 @@
 
 {% block content %}
 <div id="module-blog" class="post">
-<article {% if !post.is_enabled %}class="disabled"{% endif %}>
 
-  <h2 class="title">{{ post.title }}</h2>
+<h2 class="breadcrumb">
+    <a href="{{ url(['for': 'blog']) }}">{{ "Blog" |i18n }}</a>
+    <span class="breadcrumb-separator"> &gt; </span>
+    {{ post.title }}
+</h2>
+
+<article {% if !post.is_enabled %}class="disabled"{% endif %}>
 
   <header>
     {% if helper('setting', 'blog').get('post_show_date') == 1 %}
       <small class="creation-data">{{ post.creation_date }}</small>
     {% endif %}
     {% if helper('setting', 'blog').get('post_show_category_link') == 1 %}
-      <small class="category-title">{{ post.category.title }}</small>
+      <a href="{{ url(['for': 'blog-category', 'slug': post.category.slug]) }}">
+          <small class="category-title">{{ post.category.title }}</small>
+      </a>
     {% endif %}
     {% if post.tags and helper('setting', 'blog').get('post_show_tags') == 1 %}
       <div class="post-tags">
         {% for item in post.tags %}
-          <a class="btn">{{ item.label }}</a>
+          <a class="btn" href="{{ url(['for': 'blog-tag', 'tag': item.label]) }}">{{ item.label }}</a>
         {% endfor %}
       </div>
     {% endif %}
@@ -67,7 +74,7 @@
     {% if post.tags and helper('setting', 'blog').get('post_show_tags') == 2 %}
       <div class="post-tags">
         {% for item in post.tags %}
-          <a class="tag">{{ item.label }}</a>
+          <a class="tag" href="{{ url(['for': 'blog-tag', 'tag': item.label]) }}">{{ item.label }}</a>
         {% endfor %}
       </div>
     {% endif %}

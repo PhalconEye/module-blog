@@ -20,6 +20,9 @@ namespace Blog\Controller;
 
 use Blog\Model\Tag;
 use Core\Controller\AbstractAdminController;
+use Phalcon\Mvc\Dispatcher\Exception;
+use Phalcon\Mvc\Model\Query\Builder;
+use User\Model\User;
 
 /**
  * Admin Posts Controller.
@@ -30,11 +33,61 @@ use Core\Controller\AbstractAdminController;
  * @copyright 2013-2014 PhalconEye Team
  * @license   New BSD License
  * @link      http://phalconeye.com/
- *
- * @RoutePrefix("/admin/module/blog/tags")
  */
-class AdminTagsController extends AbstractAdminController
+class TagsController extends AbstractAdminController
 {
+    /**
+     * @{inheritdoc}
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->assets->addCss('assets/css/blog/site.css');
+    }
+
+    /**
+     * Tag view
+     *
+     * @Route("/blog/tag/{tag:[a-zA-Z0-9_|+ -]+}", methods={"GET"}, name="blog-tag")
+     */
+    public function indexAction($tag)
+    {
+        if (!$tag = Tag::findFirstByLabel($tag)) {
+            throw new Exception;
+        }
+
+        $session = $this->getDI()->get('session');
+
+        $builder = new Builder();
+        $builder
+            ->from('Blog\Model\Post')
+            ->leftJoin('Blog\Model\PostTag', 'Blog\Model\Post.id = Blog\Model\PostTag.post_id')
+            ->andWhere('Blog\Model\PostTag.tag_id = '. (int) $tag->id)
+            ->orderBy('creation_date DESC');
+
+        // Apply language restrictions
+        if ($session->has('language')) {
+            $builder
+                ->andWhere('languages IS NULL')
+                ->orWhere(
+                    'languages LIKE :language:', [
+                        'language' => '%"'. $session->get('language') .'"%'
+                    ]
+                );
+            ;
+        }
+
+        // Show all articles to Admins otherwise only enabled
+        if (false == User::getViewer()->isAdmin()) {
+            $builder->andWhere('is_enabled = 1');
+        }
+
+        $this->renderParts();
+        $this->view->blogTag = $tag;
+        $this->view->posts = $builder->getQuery()->execute();
+    }
+
     /**
      * Search Tags
      *
@@ -42,7 +95,7 @@ class AdminTagsController extends AbstractAdminController
      *
      * @return \Phalcon\Http\ResponseInterface|null
      *
-     * @Get("/search", name="admin-blog-tags-search")
+     * @Get("/blog/tags/search", name="blog-tags-search")
      */
     public function searchAction()
     {

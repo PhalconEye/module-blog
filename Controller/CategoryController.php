@@ -12,29 +12,32 @@
   | obtain it through the world-wide-web, please send an email             |
   | to license@phalconeye.com so we can send you a copy immediately.       |
   +------------------------------------------------------------------------+
+  | Author: Piotr Gasiorowski <p.gasiorowski@vipserv.org>                  |
+  +------------------------------------------------------------------------+
 */
 
 namespace Blog\Controller;
 
-use Blog\Model\Post;
+use Blog\Model\Category;
 use Core\Controller\AbstractController;
 use Phalcon\Mvc\Dispatcher\Exception;
 use Phalcon\Mvc\Model\Query\Builder;
 use User\Model\User;
 
 /**
- * Index controller.
+ * Category controller.
  *
- * @category PhalconEye\Module
- * @package  Controller
+ * @category  PhalconEye
+ * @package   Blog\Controller
+ * @author    Piotr Gasiorowski <p.gasiorowski@vipserv.org>
+ * @copyright 2013-2014 PhalconEye Team
+ * @license   New BSD License
+ * @link      http://phalconeye.com/
  *
- * @RoutePrefix("/blog", name="blogs")
+ * @RoutePrefix("/blog/category")
  */
-class IndexController extends AbstractController
+class CategoryController extends AbstractController
 {
-    /** @var Post|null */
-    private $hitPost = null;
-
     /**
      * @{inheritdoc}
      */
@@ -46,12 +49,16 @@ class IndexController extends AbstractController
     }
 
     /**
-     * Module index action.
+     * Category view
      *
-     * @Route("/", methods={"GET"}, name="blog")
+     * @Route("/{slug:[a-zA-Z0-9_|+ -]+}", methods={"GET"}, name="blog-category")
      */
-    public function indexAction()
+    public function indexAction($slug)
     {
+        if (!$category = Category::findFirstBySlug($slug)) {
+            throw new Exception;
+        }
+
         $session = $this->getDI()->get('session');
 
         $builder = new Builder();
@@ -76,40 +83,22 @@ class IndexController extends AbstractController
             $builder->andWhere('is_enabled = 1');
         }
 
-        $this->renderParts();
-        $this->view->posts = $posts = $builder->getQuery()->execute();
-    }
+        // Categories scope
+        $categories = $category->getNestedCategoriesIds();
+        $categories[] = $category->id;
+        $builder->andWhere('category_id IN ('. implode(',', $categories) .')');
 
-    /**
-     * Post view.
-     *
-     * @return void
-     *
-     * @Route("/{slug:[a-zA-Z0-9_|+ -]+}", methods={"GET"}, name="blog-post")
-     */
-    public function postAction($slug)
-    {
-        // Article not found
-        if (!$post = Post::findFirstBySlug($slug)) {
-            throw new Exception;
-        }
-
-        // Article not enabled
-        if (!$post->is_enabled && !User::getViewer()->isAdmin()) {
-            throw new Exception;
+        // Parent Categories
+        $parentCategories = [];
+        $parentCategory = $category->getParent();
+        while ($parentCategory) {
+            $parentCategories[$parentCategory->slug] = $parentCategory->title;
+            $parentCategory = $parentCategory->getParent();
         }
 
         $this->renderParts();
-        $this->view->post = $this->hitPost = $post;
-    }
-
-    /**
-     * We need to hit the counter here due to post Update hooks
-     */
-    public function __destruct()
-    {
-        if ($this->hitPost) {
-            $this->hitPost->hit();
-        }
+        $this->view->parentCategories = array_reverse($parentCategories);
+        $this->view->category = $category;
+        $this->view->posts = $builder->getQuery()->execute();
     }
 }
