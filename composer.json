@@ -11,6 +11,6 @@
         "phalconeye/installer": "0.5.*"
     },
     "extra": {
-        "name": "blog"
+        "name": "Blog"
     }
 }
